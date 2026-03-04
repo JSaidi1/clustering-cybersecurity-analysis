@@ -161,14 +161,36 @@ def isolate_noise_points(df_original, labels):
 
 
 
-features_df, donnees_normalisees = select_cyber_features(df_brut)
-best_k = find_optimal_clusters(X_scaled)
+
+
+
+try:
+    df_complet = pd.read_csv("UNSW_NB15_testing-set.csv")
+except FileNotFoundError:
+    df_complet = pd.read_csv("../UNSW_NB15_testing-set.csv")
+
+df_brut = df_complet.sample(n=10000, random_state=42).reset_index(drop=True)
+
+features_df, X_scaled = select_cyber_features(df_brut)
+relevant_cols = ['dur', 'sbytes', 'dbytes', 'sttl', 'dttl', 'spkts', 'dpkts', 'rate']
+
+find_optimal_clusters(X_scaled)
+
 k_force = 9
 kmeans_final = KMeans(n_clusters=k_force, random_state=42, n_init=10)
 kmeans_final.fit(X_scaled)
+
 analyze_cluster_centers(kmeans_final, relevant_cols, StandardScaler().fit(features_df))
-labels_hca, indices_hca = get_hca_clusters(X_scaled, n_clusters=best_k)
+
+labels_hca, indices_hca = get_hca_clusters(X_scaled, n_clusters=9)
+
+if labels_hca is not None:
+    print("\n--- Répartition des points par Cluster (HCA) ---")
+    print(pd.Series(labels_hca).value_counts().sort_index())
+
 find_best_epsilon(X_scaled)
-db_model = DBSCAN(eps=0.5, min_samples=10).fit(X_sample)
+
+db_model = DBSCAN(eps=0.5, min_samples=10).fit(X_scaled)
 labels_dbscan = db_model.labels_
-bruit_df = isolate_noise_points(df_brut.iloc[indices], labels_dbscan)
+
+bruit_df = isolate_noise_points(df_brut, labels_dbscan)

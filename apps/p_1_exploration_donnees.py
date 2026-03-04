@@ -102,3 +102,7 @@ features_df, X_scaled = select_cyber_features(df)
 analyze_distributions(df, relevant_cols)
 check_outliers(df, relevant_cols)
 
+
+if __name__ == "__main__":
+    df = pd.read_csv("UNSW_NB15_testing-set.csv")
+    explore_structure(df)
