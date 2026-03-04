@@ -4,7 +4,8 @@ from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-df = pd.read_csv("UNSW_NB15_testing-set.csv")
+#df = pd.read_csv("UNSW_NB15_testing-set.csv")
+df = pd.read_csv("data/UNSW_NB15_testing-set.csv")
 
 # # Partie 1 — Exploration des données
 # Objectifs :

@@ -7,32 +7,6 @@ from sklearn.decomposition import PCA
 #                         Partie 2 — Préparation des données 
 # ================================================================================
 
-# Travail demandé :
-
-# 1. Sélectionner un sous-ensemble de variables numériques pertinentes.
-# 2. Appliquer une normalisation.
-# 3. Réduire éventuellement la dimension des données (PCA).
-
-# Questions :
-
-# * Pourquoi la réduction de dimension peut-elle améliorer le clustering ?
-# * Quel pourcentage de variance doit être conservé ?
-
-# -------------------------
-# Variables importantes :
-
-# * dur : durée de la connexion
-# * proto : protocole réseau
-# * sbytes : nombre d’octets envoyés par la source
-# * dbytes : nombre d’octets envoyés par la destination
-# * sttl : TTL de la source
-# * dttl : TTL de la destination
-# * spkts : nombre de paquets source
-# * dpkts : nombre de paquets destination
-# * rate : taux de transfert
-
-# Chaque ligne correspond à **une connexion réseau**.
-
 # --------------------------------------------------------------------------------
 # Chemin des données 
 # --------------------------------------------------------------------------------
