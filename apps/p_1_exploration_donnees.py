@@ -4,6 +4,8 @@ from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+df = pd.read_csv("UNSW_NB15_testing-set.csv")
+
 # # Partie 1 — Exploration des données
 # Objectifs :
 # 1. Comprendre la structure du dataset.
@@ -32,49 +34,53 @@ def analyse_missing_data(df) :
 
 
 # 2. Identifier les variables pertinentes pour le clustering.
-def select_cyber_features(df):
-    relevant_cols = [
-        'dur', 'proto', 'sbytes', 'dbytes', 'sttl', 'dttl', 
+relevant_cols = [
+        'dur', 'sbytes', 'dbytes', 'sttl', 'dttl', 
         'spkts', 'dpkts', 'rate'
     ]
-    
+def select_cyber_features(df):
     available_cols = [c for c in relevant_cols if c in df.columns]
-    
-
     features = df[available_cols].copy()
+
+    if features.isnull().values.any():
+        print("⚠️ Nettoyage : Valeurs manquantes détectées et remplacées par 0.")
+        features = features.fillna(0) 
 
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(features)
     
-    print(f"Features sélectionnées : {available_cols}")
+    print(f"Features sélectionnées et nettoyées : {available_cols}")
     return features, X_scaled
 
 
 
 # 3. Analyser les distributions des variables.
-def analyze_distributions(df, columns):
+def analyze_distributions(df, cols):
     n_cols = 2
-    n_rows = (len(columns) + 1) // n_cols
+    n_rows = (len(cols) + 1) // n_cols
     
     fig, axes = plt.subplots(n_rows, n_cols, figsize=(15, n_rows * 4))
     axes = axes.flatten()
 
-    for i, col in enumerate(columns):
+    for i, col in enumerate(cols):
         sns.histplot(df[col], kde=True, ax=axes[i], bins=30, color='skyblue')
         axes[i].set_title(f'Distribution de {col}')
         axes[i].set_yscale('log')
+
     plt.tight_layout()
+    plt.subplots_adjust(hspace=0.4)
     plt.show()
 
 
 
 # 4. Détecter les valeurs extrêmes.
-def check_outliers(df, columns):
+def check_outliers(df, cols):
     plt.figure(figsize=(12, 6))
-    sns.boxplot(data=df[columns])
+    sns.boxplot(data=df[cols])
     plt.yscale('log') 
     plt.title("Détection visuelle des outliers (Échelle Log)")
     plt.xticks(rotation=45)
+    plt.tight_layout()
     plt.show()
 
 # Questions :
@@ -87,4 +93,11 @@ def check_outliers(df, columns):
 # Parce que les ML ne comprennent que les nombres. 
 # L'encodage transforme des catégories string en valeurs numériques. 
 
+
+explore_structure(df)
+missing_info = analyse_missing_data(df)
+print(missing_info)
+features_df, X_scaled = select_cyber_features(df)
+analyze_distributions(df, relevant_cols)
+check_outliers(df, relevant_cols)
 
